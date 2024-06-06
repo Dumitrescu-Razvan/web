@@ -10,7 +10,7 @@ export class UrlServiceService {
   constructor() { };
 
   getUrls(page: number = 1, category: string = 'All') {
-    return fetch(`${this.baseUrl}/urls ?page=${page}&category=${category}`, {
+    return fetch(`${this.baseUrl}/urls?page=${page}&category=${category}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

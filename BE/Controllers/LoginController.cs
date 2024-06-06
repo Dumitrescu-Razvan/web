@@ -26,7 +26,7 @@ namespace BE.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login([FromBody] User user )
+        public async Task<IActionResult> Login([FromBody] User user )
         {
             var userInDb = _context.Users.Where(u => u. username == user. username && u.Password == user.Password).FirstOrDefault();
 
@@ -37,16 +37,16 @@ namespace BE.Controllers
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(ClaimTypes.Name, userInDb.username),
+                new Claim(ClaimTypes.NameIdentifier, userInDb.Id.ToString())
             };
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true
             };
 
-            HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)), authProperties);
-            return Ok(user);
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)), authProperties);
+            return Ok(userInDb);
         }
 
 

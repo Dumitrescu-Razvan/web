@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using BE.Model;
 using BE.Data;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 
 
@@ -44,6 +43,15 @@ namespace BE
                             .AllowCredentials();
                     });
             });
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.Name = "auth_cookie";
+                    options.LoginPath = "/login";
+                });
             var app = builder.Build();
 
             app.UseSwagger();
@@ -54,6 +62,8 @@ namespace BE
 
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllers();
             app.Run();

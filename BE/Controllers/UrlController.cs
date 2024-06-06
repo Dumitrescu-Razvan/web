@@ -4,6 +4,7 @@ using System.Linq;
 using System;
 using BE.Data;
 using BE.Model;
+using System.Security.Claims;
 
 
 namespace BE.Controllers
@@ -22,16 +23,27 @@ namespace BE.Controllers
         [Route("urls")]
         public IActionResult GetUrls(int page = 1, string category = "All")
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == "NameIdentifier").Value;
+            bool hasPreviousPage = false;
+            bool hasNextPage = false;
+            int userId = int.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
             var urls = new List<Url>();
             if (category == "All")
             {
                 //get all urls of the user
-                urls = _context.Urls.Where(u => u.UserId == int.Parse(userId)).Skip((page - 1) * 4).Take(4).ToList();
+                urls = _context.Urls.Where(u => u.UserId == userId).Skip((page - 1) * 4).Take(4).ToList();
             }
             else
             {
-                urls = _context.Urls.Where(u => u.UserId == int.Parse(userId) && u.category == category).Skip((page - 1) * 4).Take(4).ToList();
+                urls = _context.Urls.Where(u => u.UserId == userId && u.category == category).Skip((page - 1) * 4).Take(4).ToList();
+            }
+            
+            if (page > 1)
+            {
+                hasPreviousPage = true;
+            }
+            if (_context.Urls.Where(u => u.UserId == userId).Count() > page * 4)
+            {
+                hasNextPage = true;
             }
 
             if (urls == null)
@@ -40,7 +52,7 @@ namespace BE.Controllers
             }
             else
             {
-                return Ok(urls);
+                return Ok(Json(new { urls, hasPreviousPage, hasNextPage }));
             }
         }
 
@@ -64,13 +76,19 @@ namespace BE.Controllers
         [Route("urls")]
         public IActionResult AddUrl([FromBody] Url url)
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == "NameIdentifier").Value;
+            int userId = int.Parse(HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            Console.WriteLine(userId);
+            var userExists = _context.Users.Where(u => u.Id == userId).FirstOrDefault();
+            if (userExists == null)
+            {
+                return NotFound();
+            }
                 
             Url newUrl = new Url();
             newUrl.url = url.url;
             newUrl.description = url.description;
             newUrl.category = url.category;
-            newUrl.UserId = int.Parse(userId);
+            newUrl.UserId = userId;
             _context.Urls.Add(newUrl);
             _context.SaveChanges();
             return Ok(newUrl);
