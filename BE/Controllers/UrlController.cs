@@ -9,7 +9,6 @@ using BE.Model;
 namespace BE.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class UrlController : Controller
     {
         private readonly Contex _context;
@@ -20,7 +19,7 @@ namespace BE.Controllers
         }
 
         [HttpGet]
-        [Route("GetUrls")]
+        [Route("urls")]
         public IActionResult GetUrls(int page = 1, string category = "All")
         {
             string userId = User.Claims.FirstOrDefault(c => c.Type == "NameIdentifier").Value;
@@ -46,7 +45,7 @@ namespace BE.Controllers
         }
 
         [HttpGet]
-        [Route("GetCategories")]
+        [Route("categories")]
         public IActionResult GetCategories()
         {
             var categories = _context.Urls.Select(u => u.category).Distinct().ToList();
@@ -62,15 +61,15 @@ namespace BE.Controllers
         }
 
         [HttpPost]
-        [Route("AddUrl")]
-        public IActionResult AddUrl(string url, string description, string category)
+        [Route("urls")]
+        public IActionResult AddUrl([FromBody] Url url)
         {
             string userId = User.Claims.FirstOrDefault(c => c.Type == "NameIdentifier").Value;
                 
             Url newUrl = new Url();
-            newUrl.url = url;
-            newUrl.description = description;
-            newUrl.category = category;
+            newUrl.url = url.url;
+            newUrl.description = url.description;
+            newUrl.category = url.category;
             newUrl.UserId = int.Parse(userId);
             _context.Urls.Add(newUrl);
             _context.SaveChanges();
@@ -78,8 +77,8 @@ namespace BE.Controllers
             
         }
 
-        [HttpPost]
-        [Route("DeleteUrl")]
+        [HttpDelete]
+        [Route("url")]
         public IActionResult DeleteUrl(int urlId)
         {
             var url = _context.Urls.Where(u => u.Id == urlId).FirstOrDefault();
@@ -96,8 +95,8 @@ namespace BE.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("EditUrl")]
+        [HttpPut]
+        [Route("url")]
         public IActionResult EditUrl(int urlId, string url, string description, string category)
         {
             var urlToEdit = _context.Urls.Where(u => u.Id == urlId).FirstOrDefault();

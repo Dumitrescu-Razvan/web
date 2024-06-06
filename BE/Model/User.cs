@@ -8,11 +8,12 @@ namespace BE.Model
 {
     public class User
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public string  username { get; set; }
         public string Password { get; set; }
         
         [JsonIgnore]
-        public IEnumerable<Url> Urls { get; set; }
+        public int Id { get; set; }
+        [JsonIgnore]
+        public IEnumerable<Url>? Urls { get; set; }
     }
 }

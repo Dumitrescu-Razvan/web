@@ -5,12 +5,12 @@ import { Injectable } from '@angular/core';
 })
 export class UrlServiceService {
 
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = 'http://localhost:5145';
 
   constructor() { };
 
   getUrls(page: number = 1, category: string = 'All') {
-    return fetch(`${this.baseUrl}/api/urls.php?page=${page}&category=${category}`, {
+    return fetch(`${this.baseUrl}/urls ?page=${page}&category=${category}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export class UrlServiceService {
   }
 
   loadCategories() {
-    return fetch(`${this.baseUrl}/api/categories.php`, {
+    return fetch(`${this.baseUrl}/categories `, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -32,7 +32,7 @@ export class UrlServiceService {
 
   addUrl(url: string, description: string, category: string) {
     console.log(JSON.stringify({ url, description, category }))
-    return fetch(`${this.baseUrl}/api/urls.php`, {
+    return fetch(`${this.baseUrl}/urls `, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export class UrlServiceService {
   }
 
   editUrl(id: number, url: string, description: string, category: string) {
-    return fetch(`${this.baseUrl}/api/url.php?id=` + id, {
+    return fetch(`${this.baseUrl}/url ?id=` + id, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export class UrlServiceService {
   }
 
   deleteUrl(id: number) {
-    return fetch(`${this.baseUrl}/api/url.php?id=` + id, {
+    return fetch(`${this.baseUrl}/url ?id=` + id, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

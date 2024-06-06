@@ -15,7 +15,6 @@ namespace BE.Controllers
 
 
     [ApiController]
-    [Route("[controller]")]
     public class LoginController : Controller
     {
         private readonly Contex _context;
@@ -27,18 +26,18 @@ namespace BE.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login([FromBody] User user )
         {
-            var user = _context.Users.Where(u => u.Name == username && u.Password == password).FirstOrDefault();
+            var userInDb = _context.Users.Where(u => u. username == user. username && u.Password == user.Password).FirstOrDefault();
 
-            if (user == null)
+            if (userInDb == null)
             {
                 return NotFound();
             }
 
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Name, user.username),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
             };
             var authProperties = new AuthenticationProperties
@@ -50,28 +49,21 @@ namespace BE.Controllers
             return Ok(user);
         }
 
+
         [HttpPost]
         [Route("Register")]
-        public IActionResult Register(string username, string password)
+        public IActionResult Register( [FromBody] User user)
         {
-            var user = _context.Users.Where(u => u.Name == username).FirstOrDefault();
+            var userInDb = _context.Users.Where(u => u. username == user. username).FirstOrDefault();
+            if (userInDb != null)
+            {
+                return BadRequest();
+            }
 
-            if (user != null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                User newUser = new User();
-                newUser.Name = username;
-                newUser.Password = password;
-                _context.Users.Add(newUser);
-                _context.SaveChanges();
-                return Ok(newUser);
-            }
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return Ok(user);
         }
-
     }
-
-
 }

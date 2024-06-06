@@ -18,17 +18,10 @@ export class RegisterComponent {
 
   register(event : Event){
     event.preventDefault();
-    this.authService.register(this.username, this.password).then((respose) =>
-    respose.json().then((data) =>{
-      if(data.success){
-        this.router.navigate(['/login']);
-      }else{
-        alert('Register failed');
-      }
-    })
-    
-    )
-  }
+    this.authService.register(this.username, this.password).then((respose) =>{
+    respose.status === 200 ? this.router.navigate(['/login']) : alert('Registration failed');
+  });
+}
 
 
 }

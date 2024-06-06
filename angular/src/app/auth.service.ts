@@ -5,13 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = 'http://localhost:5145';
 
   constructor() { }
 
   login(username: string, password: string) {
     console.log(JSON.stringify({ username, password }));
-    return fetch(`${this.baseUrl}/login.php `, {
+    return fetch(`${this.baseUrl}/Login  `, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ export class AuthService {
   }
 
   register(username : string, password :string){
-    return fetch(`${this.baseUrl}/register.php`,{
+    return fetch(`${this.baseUrl}/Register `,{
       method: 'POST',
       headers:{
         'Content-Type': 'application/json',

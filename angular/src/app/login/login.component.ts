@@ -20,13 +20,7 @@ export class LoginComponent {
     event.preventDefault();
     this.authService.login(this.username, this.password).then((response) => {
       //response = [success : true/false]
-      response.json().then((data) => {
-        if(data.success){
-          this.router.navigate(['/urls']);
-        }else{
-          alert('Login failed');
-        }
-      });
+      response.status === 200 ? this.router.navigate(['/urls']) : alert('Login failed');
       
     });
     
