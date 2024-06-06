@@ -19,10 +19,21 @@ namespace BE.Controllers
             _context = context;
         }
 
-        [HttpGet(Name = "GetUrls")]
+        [HttpGet]
+        [Route("GetUrls")]
         public IActionResult GetUrls(int page = 1, string category = "All")
         {
-            var urls = _context.Urls.Where(u => u.category == category).Skip((page - 1) * 10).Take(10).ToList();
+            string userId = User.Claims.FirstOrDefault(c => c.Type == "NameIdentifier").Value;
+            var urls = new List<Url>();
+            if (category == "All")
+            {
+                //get all urls of the user
+                urls = _context.Urls.Where(u => u.UserId == int.Parse(userId)).Skip((page - 1) * 4).Take(4).ToList();
+            }
+            else
+            {
+                urls = _context.Urls.Where(u => u.UserId == int.Parse(userId) && u.category == category).Skip((page - 1) * 4).Take(4).ToList();
+            }
 
             if (urls == null)
             {
@@ -34,7 +45,8 @@ namespace BE.Controllers
             }
         }
 
-        [HttpGet(Name = "GetCategories")]
+        [HttpGet]
+        [Route("GetCategories")]
         public IActionResult GetCategories()
         {
             var categories = _context.Urls.Select(u => u.category).Distinct().ToList();
@@ -49,29 +61,25 @@ namespace BE.Controllers
             }
         }
 
-        [HttpPost(Name = "AddUrl")]
-        public IActionResult AddUrl(string url, string description, string category, int userId)
+        [HttpPost]
+        [Route("AddUrl")]
+        public IActionResult AddUrl(string url, string description, string category)
         {
-            var user = _context.Users.Where(u => u.Id == userId).FirstOrDefault();
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Url newUrl = new Url();
-                newUrl.url = url;
-                newUrl.description = description;
-                newUrl.category = category;
-                newUrl.UserId = userId;
-                _context.Urls.Add(newUrl);
-                _context.SaveChanges();
-                return Ok(newUrl);
-            }
+            string userId = User.Claims.FirstOrDefault(c => c.Type == "NameIdentifier").Value;
+                
+            Url newUrl = new Url();
+            newUrl.url = url;
+            newUrl.description = description;
+            newUrl.category = category;
+            newUrl.UserId = int.Parse(userId);
+            _context.Urls.Add(newUrl);
+            _context.SaveChanges();
+            return Ok(newUrl);
+            
         }
 
-        [HttpPost(Name = "DeleteUrl")]
+        [HttpPost]
+        [Route("DeleteUrl")]
         public IActionResult DeleteUrl(int urlId)
         {
             var url = _context.Urls.Where(u => u.Id == urlId).FirstOrDefault();
@@ -88,7 +96,8 @@ namespace BE.Controllers
             }
         }
 
-        [HttpPost(Name = "EditUrl")]
+        [HttpPost]
+        [Route("EditUrl")]
         public IActionResult EditUrl(int urlId, string url, string description, string category)
         {
             var urlToEdit = _context.Urls.Where(u => u.Id == urlId).FirstOrDefault();

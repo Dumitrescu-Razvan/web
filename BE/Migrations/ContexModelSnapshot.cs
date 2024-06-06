@@ -74,13 +74,11 @@ namespace BE.Migrations
 
             modelBuilder.Entity("BE.Model.Url", b =>
                 {
-                    b.HasOne("BE.Model.User", "user")
+                    b.HasOne("BE.Model.User", null)
                         .WithMany("Urls")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("BE.Model.User", b =>

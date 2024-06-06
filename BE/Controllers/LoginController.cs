@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Linq;
 using System;
 using BE.Data;
@@ -21,7 +25,8 @@ namespace BE.Controllers
             _context = context;
         }
 
-        [HttpPost(Name = "Login")]
+        [HttpPost]
+        [Route("Login")]
         public IActionResult Login(string username, string password)
         {
             var user = _context.Users.Where(u => u.Name == username && u.Password == password).FirstOrDefault();
@@ -30,13 +35,23 @@ namespace BE.Controllers
             {
                 return NotFound();
             }
-            else
+
+            var claims = new List<Claim>
             {
-                return Ok(user);
-            }
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+            };
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true
+            };
+
+            HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)), authProperties);
+            return Ok(user);
         }
 
-        [HttpPost(Name = "Register")]
+        [HttpPost]
+        [Route("Register")]
         public IActionResult Register(string username, string password)
         {
             var user = _context.Users.Where(u => u.Name == username).FirstOrDefault();

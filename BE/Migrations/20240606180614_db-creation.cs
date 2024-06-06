@@ -5,7 +5,7 @@
 namespace BE.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class dbcreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

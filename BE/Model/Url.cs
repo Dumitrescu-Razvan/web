@@ -12,7 +12,5 @@ namespace BE.Model{
 
         public int UserId { get; set; } 
 
-        public User user { get; set; }
-
     }
 }

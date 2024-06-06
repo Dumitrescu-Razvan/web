@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BE.Migrations
 {
     [DbContext(typeof(Contex))]
-    [Migration("20240606100949_test")]
-    partial class test
+    [Migration("20240606180614_db-creation")]
+    partial class dbcreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -77,13 +77,11 @@ namespace BE.Migrations
 
             modelBuilder.Entity("BE.Model.Url", b =>
                 {
-                    b.HasOne("BE.Model.User", "user")
+                    b.HasOne("BE.Model.User", null)
                         .WithMany("Urls")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("BE.Model.User", b =>
