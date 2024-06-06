@@ -43,7 +43,7 @@ export class UrlServiceService {
   }
 
   editUrl(id: number, url: string, description: string, category: string) {
-    return fetch(`${this.baseUrl}/url ?id=` + id, {
+    return fetch(`${this.baseUrl}/url?id=` + id, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export class UrlServiceService {
   }
 
   deleteUrl(id: number) {
-    return fetch(`${this.baseUrl}/url ?id=` + id, {
+    return fetch(`${this.baseUrl}/url?id=` + id, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',

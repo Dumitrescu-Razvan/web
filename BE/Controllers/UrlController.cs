@@ -97,9 +97,9 @@ namespace BE.Controllers
 
         [HttpDelete]
         [Route("url")]
-        public IActionResult DeleteUrl(int urlId)
+        public IActionResult DeleteUrl(int Id)
         {
-            var url = _context.Urls.Where(u => u.Id == urlId).FirstOrDefault();
+            var url = _context.Urls.Where(u => u.Id == Id).FirstOrDefault();
 
             if (url == null)
             {
@@ -115,9 +115,9 @@ namespace BE.Controllers
 
         [HttpPut]
         [Route("url")]
-        public IActionResult EditUrl(int urlId, string url, string description, string category)
+        public IActionResult EditUrl(int Id, [FromBody] Url url)
         {
-            var urlToEdit = _context.Urls.Where(u => u.Id == urlId).FirstOrDefault();
+            var urlToEdit = _context.Urls.Where(u => u.Id == Id).FirstOrDefault();
 
             if (urlToEdit == null)
             {
@@ -125,14 +125,13 @@ namespace BE.Controllers
             }
             else
             {
-                urlToEdit.url = url;
-                urlToEdit.description = description;
-                urlToEdit.category = category;
+                urlToEdit.Id = Id;
+                urlToEdit.url = url.url;
+                urlToEdit.description = url.description;
+                urlToEdit.category = url.category;
                 _context.SaveChanges();
                 return Ok(urlToEdit);
             }
         }
-
-
     }
 }

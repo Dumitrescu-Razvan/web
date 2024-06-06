@@ -28,12 +28,11 @@ export class UrlManagerComponent {
 
 loadUrls(page = 1, category = 'All'){
   this.currentPage = page;
-  console.log(this.currentPage, this.currentCategory);
   this.urlService.getUrls(page, this.currentCategory).then(response => {
     response.json().then(data => {
-      this.urls = data.urls;
-      this.next = data.has_next;
-      this.prev = data.has_prev;
+      this.urls = data.value.urls;
+      this.next = data.value.hasNextPage;
+      this.prev = data.value.hasPreviousPage;
     });
   });
 }
@@ -42,8 +41,8 @@ loadUrls(page = 1, category = 'All'){
     this.urlService.loadCategories().then(response => {
       response.json().then(data => {
         for (let category of data){
-          if (!this.categories.includes(category.category)) {
-            this.categories.push(category.category);
+          if (!this.categories.includes(category)) {
+            this.categories.push(category);
           }
         }
       });
@@ -60,6 +59,7 @@ loadUrls(page = 1, category = 'All'){
     this.urlService.addUrl(url, description, category).then(response => {
       response.json().then(data => {
         this.loadUrls();
+        this.loadCategories();
       });
     });
   }
@@ -80,6 +80,7 @@ loadUrls(page = 1, category = 'All'){
       response.json().then(data => {
         this.loadUrls();
         this.editingUrl = null;
+        this.loadCategories();
       });
     }
     );
@@ -89,6 +90,7 @@ loadUrls(page = 1, category = 'All'){
     this.urlService.deleteUrl(id).then(response => {
       response.json().then(data => {
         this.loadUrls();
+        this.loadCategories();
       });
     });
   }
