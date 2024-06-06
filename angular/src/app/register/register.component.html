@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Manager</title>
+    <link rel="stylesheet" href="register.component.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Register</h2>
+    <form (submit)="register($event)">
+        <p>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" [(ngModel)]="username" required>
+        </p>
+        <p>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" [(ngModel)]="password" required>
+        </p>
+        <p><button type="submit">Register</button></p>
+        <p>Already have an account? <a href="login">Login</a></p>
+    </form>
+</body>
+</html>

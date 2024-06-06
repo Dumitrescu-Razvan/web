@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Manager</title>
+    <link rel="stylesheet" href="url-manager.component.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h2>Manage URLs</h2>
+    <form (submit)="addUrl($event)">
+        <p>
+            <label for="url">URL:</label>
+            <input type="text" id="url" name="url" required>
+        </p>
+        <p>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+        </p>
+        <p>
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
+        </p>
+        <p><button type="submit">Add URL</button></p>
+    </form>
+    <div>
+        <label for="category-filter">Filter by category:</label>
+        <select id="category-filter" (change)="filterUrls($event)" [(ngModel)]="currentCategory">
+            <option id="category" value="All">All</option>
+            <option *ngFor="let category of categories" [value]="category" id="category">{{category}}</option>
+        </select>
+    </div>
+    <div id="url-list">
+        <div *ngFor="let url of urls">
+            <div>
+                <p><a href="{{url.url}}" target="_blank">{{url.url}}</a></p>
+                <p>{{url.description}}</p>
+                <p>Category: {{url.category}}</p>
+                <button (click)="editUrl($event,url)">Edit</button>
+                <button (click)="deleteUrl(url.id)">Delete</button>
+            </div>
+            <div>
+                <form *ngIf="editingUrl === url" (submit)="submitEdit($event,url)">
+                    <p>
+                        <label for="url">URL:</label>
+                        <input type="text" id="newurl" name="newurl" value="{{url.url}}" required>
+                    </p>
+                    <p>
+                        <label for="description">Description:</label>
+                        <textarea id="newdescription" name="newdescription" required>{{url.description}}</textarea>
+                    </p>
+                    <p>
+                        <label for="category">Category:</label>
+                        <input type="text" id="newcategory" name="newcategory" value="{{url.category}}" required>
+                    </p>
+                    <p><button type="submit">Save</button></p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <button id="prev-page" (click)="loadUrls(currentPage - 1)" [disabled]="!prev">Previous</button>
+    <button id="next-page" (click)="loadUrls(currentPage + 1)" [disabled]="!next">Next</button>
+</body>
+
+</html>
